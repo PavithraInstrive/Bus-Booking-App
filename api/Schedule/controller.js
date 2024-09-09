@@ -41,7 +41,7 @@ const getSchedule = async (req) => {
   const { from, to, date } = req.query;
 
   const scheduledBuses = await service.getScheduledBuses(from, to, date);
-  
+
   if (!scheduledBuses.length) {
     throw boom.notFound("No scheduled buses found for the specified route.");
   }

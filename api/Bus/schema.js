@@ -14,13 +14,13 @@ const getBusByIdSchema = {
   query: Joi.object({
     busId: Joi.string().required(),
   }),
-}
+};
 
 const updateStatusSchema = {
-  query:Joi.object({
-    busId:Joi.string().required(),
-  })
-}
+  query: Joi.object({
+    busId: Joi.string().required(),
+  }),
+};
 const options = {
   abortEarly: false,
   allowUnknown: true,
@@ -31,5 +31,5 @@ module.exports = {
   addBusSchema,
   options,
   getBusByIdSchema,
-  updateStatusSchema
+  updateStatusSchema,
 };

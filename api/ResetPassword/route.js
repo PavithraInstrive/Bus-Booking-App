@@ -6,7 +6,6 @@ const c = require("../../system/utils/controller-handler.js");
 const controller = require("./controller.js");
 const auth = require("../../system/middleware/auth");
 
-
 router.post(
   "/update_password/:key",
   c(controller.updatePassword, (req, res, next) => [req])

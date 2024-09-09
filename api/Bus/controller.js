@@ -31,12 +31,12 @@ const addBus = async (req) => {
   return result;
 };
 const getBusDetailsById = async (req) => {
-  const { busId } = req.query;  
+  const { busId } = req.query;
 
   if (!busId) {
     throw boom.badRequest("Bus ID is required.");
   }
-  
+
   const busDetails = await service.getBusDetailsWithBookings(busId);
 
   if (!busDetails) {

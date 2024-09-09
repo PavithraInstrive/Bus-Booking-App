@@ -1,13 +1,14 @@
 const Joi = require("joi");
 
-const ScheduleSchema ={
+const ScheduleSchema = {
   body: Joi.object({
-  busId: Joi.string().required(),
-  routeId: Joi.string().required(),
-  departureTime: Joi.date().required(),
-  arrivalTime: Joi.date().greater(Joi.ref('departureTime')).required(),
-  price: Joi.number().positive().required(),
-})}
+    busId: Joi.string().required(),
+    routeId: Joi.string().required(),
+    departureTime: Joi.date().required(),
+    arrivalTime: Joi.date().greater(Joi.ref("departureTime")).required(),
+    price: Joi.number().positive().required(),
+  }),
+};
 
 const getSchedule = {
   query: Joi.object({

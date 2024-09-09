@@ -2,12 +2,7 @@ const User = require("./index");
 const bcrypt = require("bcryptjs");
 
 const findOne = async (email) => {
-  return await User.findOne(email );
-};
-
-const create = async (params) => {
-  const newResetPass = await Password.create(params);
-  return newResetPass;
+  return await User.findOne(email);
 };
 
 const findById = async (id) => {
@@ -19,18 +14,13 @@ const checkPhoneExists = async (phoneNumber) => {
 };
 
 const createUser = async (params) => {
-  console.log(params,"params");
-  
-   const user = await User.create(params);
-   console.log(user,"user");
-   
+  const user = await User.create(params);
+
   return { message: "New User Created Successfully" };
 };
 
 const update = async (userId, body) => {
-  console.log("userId", userId,body);
-  
-  const update= await User.findOneAndUpdate(
+  const update = await User.findOneAndUpdate(
     {
       _id: userId,
     },
@@ -41,7 +31,7 @@ const update = async (userId, body) => {
       new: true,
     }
   );
-  
+
   return update;
 };
 
@@ -84,5 +74,5 @@ module.exports = {
   findOne,
   checkPhoneExists,
   findById,
-  update
+  update,
 };

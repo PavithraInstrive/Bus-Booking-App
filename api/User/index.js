@@ -1,38 +1,39 @@
-const { Schema } = require('mongoose');
-const { dbConn } = require('../../system/db/mongo');
+const { Schema } = require("mongoose");
+const { dbConn } = require("../../system/db/mongo");
 
-const userSchema = new Schema({
+const userSchema = new Schema(
+  {
     role: {
-        type: String,
-        enum: ['admin', 'user'],
-        required: true
+      type: String,
+      enum: ["admin", "user"],
+      required: true,
     },
     name: {
-        type: String,
-        required: true,
+      type: String,
+      required: true,
     },
     email: {
-        type: String,
-        required: true,
-        unique: true,
-        trim: true,
-        lowercase: true
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
+      lowercase: true,
     },
     password: {
-        type: String,
-        required: true,
-        minlength: 6
+      type: String,
+      required: true,
+      minlength: 6,
     },
     phone: {
-        type: String,
-        required: true,
-        unique: true
+      type: String,
+      required: true,
+      unique: true,
     },
- 
-}, {
-    timestamps: true
-});
+  },
+  {
+    timestamps: true,
+  }
+);
 
-const User = dbConn.model('user', userSchema);
+const User = dbConn.model("user", userSchema);
 module.exports = User;
-

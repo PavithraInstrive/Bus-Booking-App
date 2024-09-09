@@ -52,9 +52,9 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/BookSeatsRequest'
+              $ref: "#/components/schemas/BookSeatsRequest"
       responses:
-        '200':
+        "200":
           description: Seats booked successfully
           content:
             application/json:
@@ -65,12 +65,12 @@ paths:
                     type: string
                     example: "Seats booked successfully"
                   data:
-                    $ref: '#/components/schemas/BookSeatsRequest'
-        '400':
+                    $ref: "#/components/schemas/BookSeatsRequest"
+        "400":
           description: Bad request
-        '401':
+        "401":
           description: Unauthorized
-        '404':
+        "404":
           description: Not found
-        '500':
+        "500":
           description: Internal Server Error

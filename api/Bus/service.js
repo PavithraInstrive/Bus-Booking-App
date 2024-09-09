@@ -1,37 +1,34 @@
 const Bus = require("./index");
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const { ObjectId } = mongoose.Types;
 
-
-const findOne = async (data) => {  
+const findOne = async (data) => {
   return await Bus.findOne(data);
 };
 
-const create = async (params) => {  
-   const data = await Bus.create(params); 
+const create = async (params) => {
+  const data = await Bus.create(params);
   return data;
 };
 
-const findById = async (busId) => {  
+const findById = async (busId) => {
   const bus = await Bus.findById(busId);
-  
+
   return bus;
 };
 
 const getBusDetailsWithBookings = async (busId) => {
-  
   const busDetails = await Bus.aggregate([
     {
-      $match: { _id: new ObjectId(busId)},
-
+      $match: { _id: new ObjectId(busId) },
     },
     {
       $lookup: {
-        from: 'bookings', 
-        localField: '_id',
-        foreignField: 'busId',
-        as: 'bookings'
-      }
+        from: "bookings",
+        localField: "_id",
+        foreignField: "busId",
+        as: "bookings",
+      },
     },
     {
       $addFields: {
@@ -52,21 +49,21 @@ const getBusDetailsWithBookings = async (busId) => {
                             $reduce: {
                               input: "$bookings.seatIds",
                               initialValue: [],
-                              in: { $concatArrays: ["$$value", "$$this"] }
-                            }
-                          }
-                        ]
+                              in: { $concatArrays: ["$$value", "$$this"] },
+                            },
+                          },
+                        ],
                       },
                       then: "booked",
-                      else: "available"
-                    }
-                  }
-                }
-              ]
-            }
-          }
-        }
-      }
+                      else: "available",
+                    },
+                  },
+                },
+              ],
+            },
+          },
+        },
+      },
     },
     {
       $project: {
@@ -76,18 +73,17 @@ const getBusDetailsWithBookings = async (busId) => {
         features: 1,
         seats: 1,
         createdAt: 1,
-        updatedAt: 1
-      }
-    }
+        updatedAt: 1,
+      },
+    },
   ]);
-  
-  return busDetails[0] || null;
 
+  return busDetails[0] || null;
 };
 
 module.exports = {
   create,
   findOne,
   findById,
-  getBusDetailsWithBookings
+  getBusDetailsWithBookings,
 };

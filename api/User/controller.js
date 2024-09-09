@@ -2,16 +2,9 @@ const service = require("./service");
 const boom = require("@hapi/boom");
 const { generateTokens } = require("../../system/middleware/jwt");
 const bcrypt = require("bcryptjs");
-const fs = require("fs");
-const dotenv = require("dotenv");
-const path = require('path');
-
-
 
 const signUp = async (req) => {
   const { email, phone, password } = req.body;
-  console.log(email, phone, password);
-  
 
   const userExistsEmail = await service.findOne({ email });
   const userExistsPhoneNumber = await service.findOne({ phone });
@@ -56,18 +49,6 @@ const login = async (req) => {
 
   const { token, refreshToken } = await generateTokens(payload);
 
-
-
-  const envFilePath = path.join(__dirname, '../../local.env');
-
-  let envContent = fs.readFileSync(envFilePath, 'utf8');
-
-  envContent = envContent.replace(/JWT_ACCESS_TOKEN=.*/g, `JWT_ACCESS_TOKEN=${token}`);
-  envContent = envContent.replace(/JWT_REFRESH_TOKEN=.*/g, `JWT_REFRESH_TOKEN=${refreshToken}`);
-
-  fs.writeFileSync(envFilePath, envContent, { encoding: 'utf8' });
-
-
   return {
     message: "Sign In Successfully",
     accessToken: token,
@@ -80,10 +61,9 @@ const viewProfile = async (req) => {
   const result = {
     message: "Profile Viewed Successfully",
     data: user,
-  }
+  };
   return result;
 };
-
 
 module.exports = {
   signUp,

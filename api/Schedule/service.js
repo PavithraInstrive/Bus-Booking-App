@@ -1,55 +1,54 @@
 const schedule = require("./index");
 const Route = require("../Route/index");
 
-const findOne = async (busId,routeId,arrivalTime,departureTime) => {  
-  const result =await schedule.findOne({busId,
-    routeId, 
+const findOne = async (busId, routeId, arrivalTime, departureTime) => {
+  const result = await schedule.findOne({
+    busId,
+    routeId,
     $or: [
       {
         departureTime: { $lte: departureTime },
-        arrivalTime: { $gte: departureTime }
+        arrivalTime: { $gte: departureTime },
       },
       {
         departureTime: { $lte: arrivalTime },
-        arrivalTime: { $gte: arrivalTime }
+        arrivalTime: { $gte: arrivalTime },
       },
       {
         departureTime: { $gte: departureTime },
-        arrivalTime: { $lte: arrivalTime }
+        arrivalTime: { $lte: arrivalTime },
       },
       {
         departureTime: { $lte: departureTime },
-        arrivalTime: { $gte: arrivalTime }
-      }
+        arrivalTime: { $gte: arrivalTime },
+      },
     ],
   });
-  return result
-  
+  return result;
 };
 
-const create = async (params) => {  
-   const data = await schedule.create(params); 
+const create = async (params) => {
+  const data = await schedule.create(params);
   return data;
 };
 
-
 const getScheduledBuses = async (from, to, date) => {
   const dateObj = new Date(date);
-  console.log(dateObj, "dateObj"); 
+  console.log(dateObj, "dateObj");
 
   const scheduledBuses = await Route.aggregate([
     {
       $match: {
         $or: [
           { startLocation: from, endLocation: to },
-          { 
+          {
             stops: { $all: [from, to] },
           },
           { startLocation: from, stops: to },
           { endLocation: to, stops: from },
         ],
       },
-    },  
+    },
     {
       $lookup: {
         from: "schedules",
@@ -64,13 +63,13 @@ const getScheduledBuses = async (from, to, date) => {
     {
       $match: {
         "schedules.departureTime": {
-          $gte: dateObj, 
+          $gte: dateObj,
         },
       },
     },
     {
       $lookup: {
-        from: "buses", 
+        from: "buses",
         localField: "schedules.busId",
         foreignField: "_id",
         as: "busDetails",
@@ -104,5 +103,5 @@ const getScheduledBuses = async (from, to, date) => {
 module.exports = {
   create,
   findOne,
-  getScheduledBuses
+  getScheduledBuses,
 };
