@@ -23,4 +23,34 @@ const generateTokens = async (payload) => {
     });
 };
 
+const createRefreshToken = async (payload) => {
+    return new Promise((resolve, reject) => {
+        jwt.sign(
+            payload,
+            process.env.REFRESH_SECRET_KEY,
+            { expiresIn: process.env.EXPIRE_IN },
+            (err, refreshToken) => {
+                if (err) reject(err);
+                resolve(refreshToken);
+            }
+        );
+    });
+};
+
+const resetToken = async(payload) => {
+    return new Promise((resolve, reject) => {
+        jwt.sign(
+            payload,
+            process.env.REFRESH_SECRET_KEY,
+            { expiresIn: process.env.EXPIRE_IN },
+            (err, refreshToken) => {
+                if (err) reject(err);
+                resolve(refreshToken);
+            }
+        );
+    });
+};
+
+
+
 module.exports = { generateTokens };

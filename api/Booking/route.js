@@ -6,14 +6,9 @@ const controller = require('./controller');
 const schema = require('./schema');
 
 
-router.post('/addBus',
-     celebrate(schema.addBusSchema, schema.options), 
-     c(controller.addBus, (req, res, next) => [req]));
-
-router.get('/getBusById',
-     celebrate(schema.getBusByIdSchema, schema.options),
-     c(controller.getBusDetailsById, (req, res, next) => [req]))
-
+router.post('/bookSeatsPerSegment',
+     celebrate(schema.bookSeatsSchema, schema.options), 
+     c(controller.bookSeatsByLocation, (req, res, next) => [req]));
 
 
 

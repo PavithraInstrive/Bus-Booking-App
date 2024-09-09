@@ -5,6 +5,11 @@ const findOne = async (email) => {
   return await User.findOne(email );
 };
 
+const create = async (params) => {
+  const newResetPass = await Password.create(params);
+  return newResetPass;
+};
+
 const findById = async (id) => {
   return await User.findById(id);
 };
@@ -20,6 +25,24 @@ const createUser = async (params) => {
    console.log(user,"user");
    
   return { message: "New User Created Successfully" };
+};
+
+const update = async (userId, body) => {
+  console.log("userId", userId,body);
+  
+  const update= await User.findOneAndUpdate(
+    {
+      _id: userId,
+    },
+    {
+      ...body,
+    },
+    {
+      new: true,
+    }
+  );
+  
+  return update;
 };
 
 const find = async (params) => {
@@ -61,4 +84,5 @@ module.exports = {
   findOne,
   checkPhoneExists,
   findById,
+  update
 };

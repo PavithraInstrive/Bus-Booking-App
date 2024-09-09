@@ -9,7 +9,16 @@ const create = async (params) => {
   return data;
 };
 
+const findById = async (id) => {  
+  console.log(id);
+  
+  const data = await Route.findById(id);
+  console.log(data);
+  
+  return data;
+};
 module.exports = {
   findOne,
-  create
+  create,
+  findById
 };

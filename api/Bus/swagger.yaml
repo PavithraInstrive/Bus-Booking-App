@@ -1,0 +1,104 @@
+openapi: 3.0.0
+info:
+  title: HMS Bus API
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080/api
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    AddBusRequest:
+      type: object
+      properties:
+        busNumber:
+          type: string
+          example: "TN04GH2685"
+        busType:
+          type: string
+          enum: ["AC", "Non-AC", "Sleeper", "Seater"]
+          example: "Seater"
+        capacity:
+          type: number
+          example: 45
+        features:
+          type: array
+          items:
+            type: string
+          example: ["Reading Lights", "Television", "USB Charging Ports"]
+    GetBusByIdRequest:
+      type: object
+      properties:
+        busId:
+          type: string
+          example: "66d853d046b3b5ecb1f3314b"
+
+paths:
+  /bus/addBus:
+    post:
+      tags:
+        - Bus
+      summary: Add a New Bus
+      description: Adds a new bus to the system with the specified details.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddBusRequest'
+      responses:
+        '200':
+          description: Bus added successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Bus added successfully"
+                  data:
+                    $ref: '#/components/schemas/AddBusRequest'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+
+  /bus/getBusById:
+    get:
+      tags:
+        - Bus
+      summary: Get Bus Details by ID
+      description: Retrieve bus details by its unique ID.
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: busId
+          required: true
+          schema:
+            type: string
+            example: "66d853d046b3b5ecb1f3314b"
+          description: The unique ID of the bus
+      responses:
+        '200':
+          description: Successful response with bus details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddBusRequest'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Bus not found
+        '500':
+          description: Internal Server Error

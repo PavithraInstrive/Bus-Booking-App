@@ -31,7 +31,9 @@ const middlewareConfig = require("./system/config/middleware");
 const publicRouters = require("./routers/publicRouter");
 const privateRouters = require("./routers/privateRouter");
 const swaggerUi = require("swagger-ui-express");
+const swaggerJSDoc = require("swagger-jsdoc");
 const YAML = require("yamljs");
+const path = require("path");
 
 const corsOptions = {
   origin: ["http://localhost:8080", "http://your-allowed-origin.com"],
@@ -47,11 +49,8 @@ app.use(express.json());
 // app.use(cors(middlewareConfig.cors));
 app.use(helmet());
 app.use(morgan(middlewareConfig.morganRequestFormat));
-app.use(
-  bodyParser.urlencoded({
-    extended: true,
-  })
-);
+app.use(express.urlencoded({ extended: true }));
+
 // app.use(bodyParser.json());
 app.use(requestIp.mw());
 
@@ -61,12 +60,12 @@ app.get("/", (req, res) => {
 });
 
 // const appointmentDocument = YAML.load('./api/Appointment/swagger.yaml');
-// const userDocument = YAML.load('./api/User/swagger.yaml');
+const userDocument = YAML.load('./api/User/swagger.yaml');
 
 // const combinedSwaggerDocument = {
 //     openapi: '3.0.0',
 //     info: {
-//       title: 'HMS',
+//       title: 'Bus Booking API',
 //       version: '1.0.0',
 //       description: 'API documentation for both Appointment and User modules',
 //     },
@@ -76,16 +75,47 @@ app.get("/", (req, res) => {
 //       },
 //     ],
 //     paths: {
-//       ...appointmentDocument.paths,
+//     //   ...appointmentDocument.paths,
 //       ...userDocument.paths,
 //     },
-//     cpmponents: {
-//       ...appointmentDocument.components,
+//     components: {
+//     //   ...appointmentDocument.components,
 //       ...userDocument.components,
 //     },
 //   };
 
 // app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(combinedSwaggerDocument));
+
+const swaggerDefinition = {
+    openapi: '3.0.0',
+    info: {
+      title: 'Bus Booking API',
+      version: '1.0.0',
+      description: 'API documentation for the Bus Booking application',
+      contact: {
+        name: 'Your Name',
+        email: 'youremail@example.com',
+      },
+    },
+    servers: [
+      {
+        url: 'http://localhost:8080/api',
+        description: 'Development server',
+      },
+    ],
+  };
+
+  const swaggerOptions = {
+    swaggerDefinition,
+    apis: [
+      path.join(__dirname, 'api/**/swagger.yaml'),
+    ],
+  };
+  const swaggerSpec = swaggerJSDoc(swaggerOptions);
+
+  
+  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
 
 publicRouters(app);
 privateRouters(app);

@@ -1,0 +1,128 @@
+openapi: 3.0.0
+info:
+  title: HMS Schedule API
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080/api
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    ScheduleBusRequest:
+      type: object
+      properties:
+        busId:
+          type: string
+          example: "66d6b6022f5daab8e09634fa"
+        routeId:
+          type: string
+          example: "66d6b164b7474a8c4e78ff27"
+        departureTime:
+          type: string
+          format: date-time
+          example: "2024-11-28T15:50:00Z"
+        arrivalTime:
+          type: string
+          format: date-time
+          example: "2024-11-28T16:33:00Z"
+        price:
+          type: number
+          example: 500
+    GetScheduleBusesRequest:
+      type: object
+      properties:
+        from:
+          type: string
+          example: "Chennai"
+        to:
+          type: string
+          example: "Coimbatore"
+        date:
+          type: string
+          format: date-time
+          example: "2024-10-25T09:25:00Z"
+
+paths:
+  /schedule/scheduleBus:
+    post:
+      tags:
+        - Schedule
+      summary: Schedule a Bus
+      description: Schedule a bus for a specific route and time.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScheduleBusRequest'
+      responses:
+        '200':
+          description: Bus scheduled successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Bus scheduled successfully"
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+
+  /schedule/getScheduleBuses:
+    get:
+      tags:
+        - Schedule
+      summary: Get Scheduled Buses
+      description: Retrieve scheduled buses based on the provided route and date.
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: from
+          required: true
+          schema:
+            type: string
+            example: "Chennai"
+          description: Start location
+        - in: query
+          name: to
+          required: true
+          schema:
+            type: string
+            example: "Coimbatore"
+          description: End location
+        - in: query
+          name: date
+          required: true
+          schema:
+            type: string
+            format: date-time
+            example: "2024-10-25T09:25:00Z"
+          description: Date and time to filter the schedules
+      responses:
+        '200':
+          description: List of scheduled buses
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ScheduleBusRequest'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: No scheduled buses found
+        '500':
+          description: Internal Server Error

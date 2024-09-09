@@ -6,6 +6,7 @@ const busSchema = new Schema({
   busType: { type: String, enum: ['AC', 'Non-AC', 'Sleeper', 'Seater'], required: true },
   capacity: { type: Number, required: true },
   features: [{ type: String }],
+  seats:[{type:Object}]
 },
 {
     timestamps: true

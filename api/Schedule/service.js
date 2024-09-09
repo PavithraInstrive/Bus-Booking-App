@@ -5,9 +5,24 @@ const findOne = async (busId,routeId,arrivalTime,departureTime) => {
   const result =await schedule.findOne({busId,
     routeId, 
     $or: [
-      { departureTime:{ $gte: arrivalTime, $lte: departureTime }},
-      { arrivalTime:{ $gte: arrivalTime, $lte: departureTime }},
-    ],});
+      {
+        departureTime: { $lte: departureTime },
+        arrivalTime: { $gte: departureTime }
+      },
+      {
+        departureTime: { $lte: arrivalTime },
+        arrivalTime: { $gte: arrivalTime }
+      },
+      {
+        departureTime: { $gte: departureTime },
+        arrivalTime: { $lte: arrivalTime }
+      },
+      {
+        departureTime: { $lte: departureTime },
+        arrivalTime: { $gte: arrivalTime }
+      }
+    ],
+  });
   return result
   
 };

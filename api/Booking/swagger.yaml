@@ -1,0 +1,76 @@
+openapi: 3.0.0
+info:
+  title: HMS Booking API
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080/api
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    BookSeatsRequest:
+      type: object
+      properties:
+        busId:
+          type: string
+          example: "66d853d046b3b5ecb1f3314b"
+        routeId:
+          type: string
+          example: "66d6b164b7474a8c4e78ff27"
+        seatIds:
+          type: array
+          items:
+            type: number
+          example: [135]
+        price:
+          type: number
+          example: 100
+        from:
+          type: string
+          example: "Vellore"
+        to:
+          type: string
+          example: "Erode"
+        status:
+          type: string
+          example: "cancelled"
+
+paths:
+  /booking/bookSeatsPerSegment:
+    post:
+      tags:
+        - Booking
+      summary: Book Seats Per Segment
+      description: Books seats for a particular bus segment.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookSeatsRequest'
+      responses:
+        '200':
+          description: Seats booked successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Seats booked successfully"
+                  data:
+                    $ref: '#/components/schemas/BookSeatsRequest'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal Server Error
