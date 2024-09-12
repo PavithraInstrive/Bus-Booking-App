@@ -3,11 +3,10 @@ const { Schema } = require("mongoose");
 const { dbConn } = require("../../system/db/mongo");
 
 const cardSchema = new Schema({
-
-  userId:{
+  userId: {
     type: Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
+    ref: "User",
+    required: true,
   },
   paymentMethodId: {
     type: String,
@@ -19,11 +18,9 @@ const cardSchema = new Schema({
     type: String,
     required: true,
   },
-  paymentMethodTypes:{
+  paymentMethodTypes: {
     type: String,
-  }
-
-  
+  },
 });
 
 const Card = dbConn.model("Card", cardSchema);

@@ -19,7 +19,8 @@ const createCheckoutSession = async (req, res) => {
     if (!customer) {
       throw boom.badRequest("Failed to create customer.");
     }
-    await cardService.create({userId:userId, 
+    await cardService.create({
+      userId: userId,
       customerId: customer.id,
       paymentMethodTypes: paymentMethodTypes,
     });
@@ -39,11 +40,10 @@ const createCheckoutSession = async (req, res) => {
     message: "Checkout session created successfully.",
     url: session.url,
   };
-  return result; 
+  return result;
 };
 
-
-const getCustomerCards  = async (req, res) => {
+const getCustomerCards = async (req, res) => {
   const userId = req.user.id;
   const user = await cardService.findOne(userId);
 
@@ -51,7 +51,10 @@ const getCustomerCards  = async (req, res) => {
     throw boom.notFound("User or Customer ID not found.");
   }
 
-  const paymentMethods = await cardService.paymentMethods(user.customerId,user.paymentMethodTypes);
+  const paymentMethods = await cardService.paymentMethods(
+    user.customerId,
+    user.paymentMethodTypes
+  );
 
   if (!paymentMethods) {
     throw boom.notFound("Payment methods not found.");
@@ -59,36 +62,39 @@ const getCustomerCards  = async (req, res) => {
 
   const result = {
     message: "Payment methods retrieved successfully.",
-    data: paymentMethods
-  }
-  return result
+    data: paymentMethods,
+  };
+  return result;
 };
 
 const editCardDetails = async (req, res) => {
-
   const { paymentMethodId } = req.query;
   const { customerId, ...updates } = req.body;
 
   if (!customerId) {
-    return({ error: "Customer ID is required" });
+    return { error: "Customer ID is required" };
   }
 
-  const updatedCard = await cardService.updateCardDetails(paymentMethodId, updates, customerId);
+  const updatedCard = await cardService.updateCardDetails(
+    paymentMethodId,
+    updates,
+    customerId
+  );
   if (!updatedCard) {
     throw boom.notFound("Payment method not found.");
   }
 
   const result = {
     message: "Payment method updated successfully.",
-    data: updatedCard
+    data: updatedCard,
   };
-  return result
-}
+  return result;
+};
 
-const deleteCard = async(req, res) => {
-  const { paymentMethodId, customerId } = req.query;  
+const deleteCard = async (req, res) => {
+  const { paymentMethodId, customerId } = req.query;
   if (!customerId) {
-    return ({ error: "Customer ID is required" });
+    return { error: "Customer ID is required" };
   }
 
   const deletedCard = await cardService.deleteCard(paymentMethodId, customerId);
@@ -96,17 +102,17 @@ const deleteCard = async(req, res) => {
   if (!deletedCard) {
     throw boom.notFound("Payment method not found or already deleted.");
   }
-  
+
   const result = {
     message: "Payment method deleted successfully.",
-    data: deletedCard
+    data: deletedCard,
   };
-  return result
-}
+  return result;
+};
 
 module.exports = {
   createCheckoutSession,
   getCustomerCards,
   editCardDetails,
-  deleteCard
+  deleteCard,
 };

@@ -1,11 +1,28 @@
+const { query } = require("express");
 const Joi = require("joi");
 
-const addRouteSchema = {
+const checkoutSchema = {
   body: Joi.object({
-    startLocation: Joi.string().required(),
-    endLocation: Joi.string().required(),
-    distance: Joi.number().positive().required(),
-    stops: Joi.array().items(Joi.string()).optional(),
+    paymentMethodTypes: Joi.string().required(),
+    successUrl: Joi.string().required(),
+    cancelUrl: Joi.string().required(),
+  }),
+};
+
+const editCardSchema = {
+  body: Joi.object({
+    card: Joi.object().required(),
+    customerId: Joi.string().required(),
+  }),
+  query: Joi.object({
+    paymentMethodId: Joi.string().required(),
+  }),
+};
+
+const deleteCardSchema = {
+  query: Joi.object({
+    paymentMethodId: Joi.string().required(),
+    customerId: Joi.string().required(),
   }),
 };
 
@@ -16,6 +33,8 @@ const options = {
 };
 
 module.exports = {
-  addRouteSchema,
+  checkoutSchema,
+  editCardSchema,
+  deleteCardSchema,
   options,
 };
