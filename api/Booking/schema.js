@@ -9,6 +9,8 @@ const bookSeatsSchema = {
     from: Joi.string().required(),
     to: Joi.string().required(),
     status: Joi.string().required(),
+    paymentMethodId: Joi.string().optional(),
+    currency: Joi.string().valid("usd", "eur", "inr").optional(),
   }),
 };
 const options = {

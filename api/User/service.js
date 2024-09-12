@@ -35,44 +35,21 @@ const update = async (userId, body) => {
   return update;
 };
 
-const find = async (params) => {
-  const { role, limit, page } = params;
-  const skip = (parseInt(page) - 1) * parseInt(limit);
-
-  const pipeline = [
-    {
-      $match: { role: role },
-    },
-    {
-      $facet: {
-        metadata: [{ $count: "totalCount" }],
-        data: [
-          { $skip: parseInt(skip) },
-          { $limit: parseInt(limit) },
-          { $project: { password: 0 } },
-        ],
-      },
-    },
-  ];
-
-  const result = await User.aggregate(pipeline);
-  const totalCount = result[0]?.metadata[0]?.totalCount;
-  const users = result[0]?.data;
-
-  return {
-    totalCount,
-    limit: parseInt(limit),
-    data: users,
-    page: parseInt(page),
-    totalPages: Math.ceil(totalCount / limit),
-  };
+const findUserById = async (userId) => {
+  return await User.findById(userId).populate('cards');
+};
+const updateUserById = async (userId, updateData) => {
+  console.log(updateData);
+  
+  return await User.findByIdAndUpdate(userId, updateData, { new: true });
 };
 
 module.exports = {
   createUser,
-  find,
   findOne,
   checkPhoneExists,
   findById,
   update,
+  findUserById,
+  updateUserById
 };

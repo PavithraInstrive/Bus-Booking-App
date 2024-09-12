@@ -29,7 +29,14 @@ const userSchema = new Schema(
       required: true,
       unique: true,
     },
-  },
+    stripeCustomerId: {
+        type: String,
+      },
+      paymentMethodTypes: {
+        type: String,
+      },
+      cards: [{ type: Schema.Types.ObjectId, ref: 'Card' }],
+    },
   {
     timestamps: true,
   }

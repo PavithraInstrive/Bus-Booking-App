@@ -32,8 +32,11 @@ const publicRouters = require("./routers/publicRouter");
 const privateRouters = require("./routers/privateRouter");
 const swaggerUi = require("swagger-ui-express");
 const swaggerJSDoc = require("swagger-jsdoc");
-const YAML = require("yamljs");
 const path = require("path");
+const stripe = require("./system/config/stripe");
+const Payment = require('./api/Payment/index');
+
+
 
 const corsOptions = {
   origin: ["http://localhost:8080", "http://your-allowed-origin.com"],
@@ -43,8 +46,6 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.use(userAgent.express());
-app.use(express.json());
 app.use(helmet());
 app.use(morgan(middlewareConfig.morganRequestFormat));
 app.use(express.urlencoded({ extended: true }));
@@ -54,6 +55,63 @@ app.get("/", (req, res) => {
   console.log(`Health is A OK .ENV ${process.env.NODE_ENV}`);
   res.send({ msg: `Health is A OK .ENV ${process.env.NODE_ENV}` });
 });
+
+app.post('/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
+  const sig = req.headers['stripe-signature'];
+  let event;
+
+  try {
+    event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
+  } catch (err) {
+    console.error('Error processing webhook:', err);
+    res.status(400).send(`Webhook Error: ${err.message}`);
+    return;
+  }
+
+  switch (event.type) {
+    case 'payment_intent.succeeded':
+      const paymentIntent = event.data.object;
+      const paymentDetails = {
+        id: paymentIntent.id,
+        amount: paymentIntent.amount,
+        currency: paymentIntent.currency,
+        status: paymentIntent.status,
+        customer: paymentIntent.customer,
+        payment_method: paymentIntent.payment_method,
+        created_at: new Date(paymentIntent.created * 1000),
+      };
+
+      try {
+        const newPayment = new Payment(paymentDetails);
+        await newPayment.save();
+        console.log('Payment details saved to the database:', newPayment);
+      } catch (dbError) {
+        console.error('Error saving payment details to the database:', dbError);
+        res.status(500).send('Internal Server Error');
+        return;
+      }
+
+      console.log("PaymentIntent was successful!", paymentIntent);
+      break;
+
+    case 'payment_intent.payment_failed':
+      const paymentFailedIntent = event.data.object;
+      console.log('Payment failed:', paymentFailedIntent);
+      break;
+
+    default:
+      console.log(`Unhandled event type ${event.type}`);
+  }
+
+  res.status(200).end();
+});
+
+
+
+app.use(express.json());
+app.use(express.json({ type: 'application/json' }))
+app.use(userAgent.express());
+
 
 const swaggerDefinition = {
   openapi: "3.0.0",

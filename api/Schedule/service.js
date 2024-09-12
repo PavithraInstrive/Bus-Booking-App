@@ -32,18 +32,15 @@ const create = async (params) => {
   return data;
 };
 
-const getScheduledBuses = async (from, to, date) => {
-  const dateObj = new Date(date);
-  console.log(dateObj, "dateObj");
+const getScheduledBuses = async (from, to, date, limit, skip) => {
+  const dateObj = new Date(date);  
 
   const scheduledBuses = await Route.aggregate([
     {
       $match: {
         $or: [
           { startLocation: from, endLocation: to },
-          {
-            stops: { $all: [from, to] },
-          },
+          { stops: { $all: [from, to] } },
           { startLocation: from, stops: to },
           { endLocation: to, stops: from },
         ],
@@ -95,10 +92,24 @@ const getScheduledBuses = async (from, to, date) => {
         features: "$busDetails.features",
       },
     },
+    {
+      $sort: {
+        "schedules.departureTime": 1,
+      },
+    },
+    {
+      $skip: parseInt(skip),
+    },
+    {
+      $limit: parseInt(limit),
+    },
+    
+    
   ]);
 
   return scheduledBuses;
 };
+
 
 module.exports = {
   create,

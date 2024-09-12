@@ -17,6 +17,6 @@ const busSchema = new Schema(
     timestamps: true,
   }
 );
-S
+
 const Bus = dbConn.model("bus", busSchema);
 module.exports = Bus;

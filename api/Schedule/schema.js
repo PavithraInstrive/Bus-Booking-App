@@ -15,6 +15,8 @@ const getSchedule = {
     from: Joi.string().required(),
     to: Joi.string().required(),
     date: Joi.date().required(),
+    page: Joi.number().required(),
+    limit: Joi.number().required(),
   }),
 };
 const options = {
