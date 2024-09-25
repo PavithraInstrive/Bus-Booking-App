@@ -36,14 +36,21 @@ const scheduleBus = async (req) => {
   };
   return result;
 };
-
 const getSchedule = async (req) => {
-  const { from, to, date, page, limit } = req.query;
+  const { from, to, date, page, limit } = req?.query;
   const skip = (parseInt(page) - 1) * parseInt(limit);
 
+  let scheduledBuses;
+  let totalCount;
 
-  const scheduledBuses = await service.getScheduledBuses(from, to, date,limit,skip);
-
+  if (!from || !to || !date) {
+    scheduledBuses = await service.getAllSchedules(limit, skip);
+    totalCount = await service.countAll();
+  } else {
+    buses = await service.getScheduledBuses(from, to, date, limit, skip);
+    scheduledBuses =buses.scheduledBuses
+    totalCount = buses.totalCount
+  }
   if (!scheduledBuses.length) {
     throw boom.notFound("No scheduled buses found for the specified route.");
   }
@@ -51,10 +58,31 @@ const getSchedule = async (req) => {
   return {
     message: "Scheduled buses retrieved successfully.",
     data: scheduledBuses,
+    totalCount,
   };
 };
+
+
+const getAllSchedules = async (req) => {
+  const { limit,page } = req.query;
+  console.log(limit,page);
+  
+  const skip = (parseInt(page) - 1) * parseInt(limit);
+
+  const scheduledBuses = await service.getAllSchedules(limit,skip);
+  const totalCount = await service.countAll();
+  const result = {
+    message: "All buses retrieved successfully.",
+    data: scheduledBuses,
+    totalCount
+  };
+  return result;
+};
+
+
 
 module.exports = {
   scheduleBus,
   getSchedule,
+  getAllSchedules
 };

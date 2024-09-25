@@ -15,7 +15,7 @@ router.post(
 router.post(
   "/login",
   celebrate(schema.login, schema.options),
-  c(controller.login, (req, res, next) => [req])
+  c(controller.login, (req, res, next) => [req,res])
 );
 
 router.get(
@@ -24,4 +24,8 @@ router.get(
   c(controller.viewProfile, (req, res, next) => [req])
 );
 
+router.post(
+     "/refresh",
+     c(controller.refreshtoken, (req, res, next) => [req])
+)
 module.exports = router;

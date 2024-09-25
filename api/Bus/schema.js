@@ -4,7 +4,7 @@ const Joi = require("joi");
 const addBusSchema = {
   body: Joi.object({
     busNumber: Joi.string().required(),
-    busType: Joi.string().valid("AC", "Non-AC", "Sleeper", "Seater").required(),
+    busType: Joi.string().valid("AC/Sleeper", "Non-AC/Sleeper", "AC/Seater", "Non-AC/Seater").required(),
     capacity: Joi.number().integer().min(1).required(),
     features: Joi.array().items(Joi.string()).optional(),
   }),

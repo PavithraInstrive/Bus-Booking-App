@@ -3,12 +3,14 @@ const { dbConn } = require("../../system/db/mongo");
 
 const busSchema = new Schema(
   {
+    
     busNumber: { type: String, required: true, unique: true },
     busType: {
       type: String,
-      enum: ["AC", "Non-AC", "Sleeper", "Seater"],
+      enum: ["AC/Sleeper", "Non-AC/Sleeper", "AC/Seater", "Non-AC/Seater"],
       required: true,
     },
+
     capacity: { type: Number, required: true },
     features: [{ type: String }],
     seats: [{ type: Object }],
@@ -18,5 +20,5 @@ const busSchema = new Schema(
   }
 );
 
-const Bus = dbConn.model("bus", busSchema);
+const Bus = dbConn.model("Bus", busSchema);
 module.exports = Bus;

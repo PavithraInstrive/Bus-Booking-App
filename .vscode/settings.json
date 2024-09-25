@@ -1,0 +1,4 @@
+{
+    "editor.fontFamily": "Fira Code, JetBrains Mono, Cascadia Code", // Add your preferred font here
+  "editor.fontLigatures": true,
+}

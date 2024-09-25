@@ -64,8 +64,37 @@ const changeStatus = async (req, res, next) => {
   return result;
 };
 
+const getAllBuses = async (req) => {
+  const { limit,page } = req.query;
+  const skip = (parseInt(page) - 1) * parseInt(limit);
+
+  const buses = await service.find(limit,skip);
+  const totalCount = await service.countAll();
+
+  const result = {
+    message: "All buses retrieved successfully.",
+    data: buses,
+    totalCount
+  };
+
+  return result;
+};
+const fetchAvailableBuses = async (req) => {
+  const { departureTime, arrivalTime } = req.query;
+  const buses = await service.findbuses(departureTime,arrivalTime);
+
+const result = {
+  message: "Available buses retrieved successfully.",
+  data: buses,
+};
+return result;
+};
+
+
 module.exports = {
   addBus,
   getBusDetailsById,
   changeStatus,
+  getAllBuses,
+  fetchAvailableBuses
 };

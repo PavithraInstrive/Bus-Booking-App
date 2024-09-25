@@ -4,6 +4,7 @@ const { celebrate } = require("celebrate");
 const c = require("../../system/utils/controller-handler");
 const controller = require("./controller");
 const schema = require("./schema");
+const { route } = require("../..");
 
 router.post(
   "/addBus",
@@ -16,5 +17,17 @@ router.get(
   celebrate(schema.getBusByIdSchema, schema.options),
   c(controller.getBusDetailsById, (req, res, next) => [req])
 );
+
+router.get(
+  "/getAllBuses",
+  c(controller.getAllBuses, (req, res, next) => [req])
+);
+
+router.get(
+  "/fetchAvailableBuses",
+  c(controller.fetchAvailableBuses, (req, res, next) => [req])
+);
+
+
 
 module.exports = router;

@@ -17,4 +17,9 @@ router.get(
   c(controller.getSchedule, (req, res, next) => [req])
 );
 
+// router.get( 
+//   "/getAllSchedules",
+//   c(controller.getAllSchedules, (req, res, next) => [req])
+// );
+
 module.exports = router;

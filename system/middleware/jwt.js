@@ -23,15 +23,26 @@ const generateTokens = async (payload) => {
     });
 };
 
-const createRefreshToken = async (payload) => {
+const createAccessToken = async (user) => {
+    
+    const payload = {
+        user: {
+          id: user.id,
+          role: user.role,  
+          name: user.name,
+          email: user.email,
+        },
+      };
+    console.log(payload, "payload");
+    
     return new Promise((resolve, reject) => {
         jwt.sign(
             payload,
-            process.env.REFRESH_SECRET_KEY,
-            { expiresIn: process.env.EXPIRE_IN },
-            (err, refreshToken) => {
+            process.env.SECRET_KEY,
+            { expiresIn: 3600 },
+            (err, token) => {
                 if (err) reject(err);
-                resolve(refreshToken);
+                resolve(token);
             }
         );
     });
@@ -53,4 +64,4 @@ const resetToken = async(payload) => {
 
 
 
-module.exports = { generateTokens };
+module.exports = { generateTokens,createAccessToken };

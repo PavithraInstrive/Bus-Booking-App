@@ -11,4 +11,9 @@ router.post(
   c(controller.addRouteSchema, (req, res, next) => [req])
 );
 
+router.get(
+  "/routelist",
+  c(controller.routeList, (req, res, next) => [req])
+);
+
 module.exports = router;
